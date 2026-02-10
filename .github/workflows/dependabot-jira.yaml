@@ -1,0 +1,83 @@
+name: Dependabot to Jira Using API
+
+on:
+  push:
+    branches: ["**"]
+  # pull_request:
+  #   branches: [main]
+  #   types: [opened, reopened, synchronize, ready_for_review, labeled]
+
+# on:
+#   schedule:
+#     - cron: '40 6 * * *' # 12:10 PM IST daily
+
+jobs:
+  dependabot-to-jira:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      security-events: read
+
+    outputs:
+      issue_found: ${{ steps.dependabot.outputs.issue_found }}
+      ghsa_ids: ${{ steps.dependabot.outputs.ghsa_ids }}
+      newghsa_ids: ${{ steps.dependabot.outputs.newghsa_ids }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: HylandSoftware/VulnerabilityToJIRATicket
+          ref: main
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: VulnerabilityToJIRATicket
+
+      - name: Check open Dependabot alerts
+        id: dependabot
+        uses: ./VulnerabilityToJIRATicket/.github/actions/dependabot-jira
+        with:
+          github_token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
+          jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
+          jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
+          jira_project: FCCCF
+          jira_component: "Data Marshalling"
+
+  create-jira:
+    needs: dependabot-to-jira
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      security-events: read
+    if: ${{ needs.dependabot-to-jira.outputs.issue_found == 'true' && needs.dependabot-to-jira.outputs.ghsa_ids != '[]' && needs.dependabot-to-jira.outputs.ghsa_ids != ''}}
+    strategy:
+      matrix:
+        ghsa: ${{ fromJSON(needs.dependabot-to-jira.outputs.ghsa_ids) }}
+
+    steps:
+
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          repository: HylandSoftware/VulnerabilityToJIRATicket
+          ref: main
+          token: ${{ secrets.REPO_ACCESS_TOKEN }}
+          path: VulnerabilityToJIRATicket
+
+      - name: Create Jira Ticket
+        uses: ./VulnerabilityToJIRATicket/.github/actions/create-jira-tickets
+        with:
+          PROJECT_KEY: FCCCF
+          COMPONENT: Data Marshalling
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_TITLE: ${{ github.event.pull_request.title }}
+          PR_BODY: |
+            Security vulnerability detected for PR #${{ github.event.pull_request.number }}.
+
+            Vulnerability: ${{ matrix.ghsa }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_APIS_TOKENS }}
+          JIRA_EMAIL: ${{ secrets.JIRA_USERS_EMAIL }}
+          ISSUE_TYPE: Bug
+          LABELS: dependabot, untriaged, ${{ matrix.ghsa }}

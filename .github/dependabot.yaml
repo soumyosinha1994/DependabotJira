@@ -1,0 +1,133 @@
+version: 2
+
+registries:
+  github-npm: # Also handles HylandExperience and HylandSoftware packages by the means of token permissions.
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.GH_PACKAGES_RO_PAT}}
+
+  github:
+    type: git
+    url: https://github.com
+    username: x-access-token
+    password: ${{secrets.GH_PACKAGES_RO_PAT}}
+
+  hyland-experience:
+    type: nuget-feed
+    url: https://nuget.pkg.github.com/HylandExperience/index.json
+    token: ${{ secrets.GH_PACKAGES_RO_PAT }}
+
+  nuget-org:
+    type: nuget-feed
+    url: https://api.nuget.org/v3/index.json
+
+updates:
+  - package-ecosystem: 'github-actions'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'saturday'
+      timezone: 'America/Detroit' # EST, UTC -5
+      time: '00:00'
+    registries:
+      - github
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+      - dependency-name: 'HylandExperience/trebuchet-action'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor', 'version-update:semver-patch']
+      - dependency-name: 'HylandExperience/fcc-dependabot-jira-action'
+        update-types: ['version-update:semver-minor', 'version-update:semver-patch']
+    groups:
+      GitHub Actions:
+        patterns: ['*']
+        exclude-patterns:
+          - 'HylandExperience/trebuchet-action'
+
+  - package-ecosystem: 'npm'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'saturday'
+      timezone: 'America/Detroit'
+      time: '00:15'
+    registries: [github-npm]
+    ignore:
+      - dependency-name: '*'
+        update-types: ['version-update:semver-patch']
+      - dependency-name: '@angular/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular/cli' # @angular/cli is a separate package, not covered by @angular/* pattern
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-*/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@angular-eslint/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@fortawesome/*'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'zone.js'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'nx'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nx/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@nrwl/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: '@types/*'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major', 'version-update:semver-minor']
+      - dependency-name: 'ng-packagr'
+        update-types: ['version-update:semver-major']
+      - dependency-name: 'jest-preset-angular'
+        update-types: ['version-update:semver-major']
+    open-pull-requests-limit: 15
+    groups:
+      Angular:
+        patterns: ['@angular*']
+        update-types: ['minor']
+      Nx:
+        patterns: ['@nx/*']
+        update-types: ['minor']
+      General npm:
+        patterns: ['*']
+    commit-message:
+      prefix: 'chore(deps)'
+
+  - package-ecosystem: 'nuget'
+    directory: '/server/'
+    registries: [hyland-experience, nuget-org]
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      timezone: 'America/Detroit'
+      time: '00:30'
+    ignore:
+      - dependency-name: FluentAssertions
+        update-types: ['version-update:semver-major']
+    groups:
+      Microsoft:
+        patterns: ['Microsoft*']
+      Duende:
+        patterns: ['Duende*']
+      Datadog:
+        patterns: ['Datadog*']
+      XUnit:
+        patterns: ['xunit*']
+      AutoFixture:
+        patterns: ['AutoFixture*']
+    commit-message:
+      prefix: 'chore(deps)'
+
+  - package-ecosystem: 'docker'
+    directory: '/'
+    schedule:
+      interval: 'weekly'
+      day: 'wednesday'
+      timezone: 'America/Detroit'
+      time: '00:45'
+    ignore:
+      - dependency-name: 'node'
+        update-types: ['version-update:semver-major']
+    commit-message:
+      prefix: 'chore(deps)'
