@@ -27,9 +27,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
-          repository: HylandSoftware/VulnerabilityToJIRATicket
+          repository: soumyosinha1994/VulnerabilityToJIRATicket
           ref: main
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: VulnerabilityToJIRATicket
 
       - name: Check open Dependabot alerts
@@ -39,8 +38,8 @@ jobs:
           github_token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
           jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
           jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
-          jira_project: FCCCF
-          jira_component: "Data Marshalling"
+          jira_project: KAN
+          jira_component: "Vulnerability"
 
   create-jira:
     needs: dependabot-to-jira
@@ -59,7 +58,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
         with:
-          repository: HylandSoftware/VulnerabilityToJIRATicket
+          repository: soumyosinha1994/VulnerabilityToJIRATicket
           ref: main
           token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: VulnerabilityToJIRATicket
@@ -67,8 +66,8 @@ jobs:
       - name: Create Jira Ticket
         uses: ./VulnerabilityToJIRATicket/.github/actions/create-jira-tickets
         with:
-          PROJECT_KEY: FCCCF
-          COMPONENT: Data Marshalling
+          PROJECT_KEY: KAN
+          COMPONENT: Vulnerability
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
