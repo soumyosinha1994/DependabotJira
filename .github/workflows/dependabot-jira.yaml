@@ -35,7 +35,7 @@ jobs:
         id: dependabot
         uses: ./VulnerabilityToJIRATicket/.github/actions/dependabot-jira
         with:
-          github_token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
           jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
           jira_project: KAN
