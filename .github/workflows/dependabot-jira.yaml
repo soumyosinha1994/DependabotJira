@@ -78,5 +78,5 @@ jobs:
             Vulnerability: ${{ matrix.ghsa }}
           JIRA_API_TOKEN: ${{ secrets.JIRA_APIS_TOKENS }}
           JIRA_EMAIL: ${{ secrets.JIRA_USERS_EMAIL }}
-          ISSUE_TYPE: Bug
+          ISSUE_TYPE: Task
           LABELS: dependabot, untriaged, ${{ matrix.ghsa }}
