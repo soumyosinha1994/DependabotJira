@@ -29,14 +29,13 @@ jobs:
         with:
           repository: soumyosinha1994/VulnerabilityToJIRATicket
           ref: main
-          token: ${{ secrets.REPO_ACCESS_TOKEN }}
           path: VulnerabilityToJIRATicket
 
       - name: Check open Dependabot alerts
         id: dependabot
         uses: ./VulnerabilityToJIRATicket/.github/actions/dependabot-jira
         with:
-          github_token: ${{ github.token }}
+          github_token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
           jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
           jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
           jira_project: KAN
