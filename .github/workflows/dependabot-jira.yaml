@@ -50,7 +50,7 @@ jobs:
     if: ${{ needs.dependabot-to-jira.outputs.issue_found == 'true' && needs.dependabot-to-jira.outputs.newghsa_ids != '[]' && needs.dependabot-to-jira.outputs.newghsa_ids != ''}}
     strategy:
       matrix:
-        ghsa: ${{ fromJSON(needs.dependabot-to-jira.outputs.ghsa_ids) }}
+        ghsa: ${{ fromJSON(needs.dependabot-to-jira.outputs.newghsa_ids) }}
 
     steps:
 

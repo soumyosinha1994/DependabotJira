@@ -53,7 +53,7 @@ jobs:
     if: ${{ needs.codescanning-to-jira.outputs.issue_found == 'true' && needs.codescanning-to-jira.outputs.newrule_ids != '[]' && needs.codescanning-to-jira.outputs.newrule_ids != '' }}
     strategy:
       matrix:
-        rule: ${{ fromJSON(needs.codescanning-to-jira.outputs.rule_ids) }}
+        rule: ${{ fromJSON(needs.codescanning-to-jira.outputs.newrule_ids) }}
 
     steps:
 
