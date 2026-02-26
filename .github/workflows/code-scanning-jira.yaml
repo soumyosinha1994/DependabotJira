@@ -39,7 +39,7 @@ jobs:
         with:
           github_token: ${{ github.token }}
           jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
-          jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
+          jira_api_token: ${{ secrets.JIRA_APIS_TOKENS }}
           jira_project: KAN
           jira_component: "Vulnerability"
 

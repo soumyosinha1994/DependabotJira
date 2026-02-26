@@ -6,6 +6,7 @@ on:
   # pull_request:
   #   branches: [main]
   #   types: [opened, reopened, synchronize, ready_for_review, labeled]
+
 # on:
 #   schedule:
 #     - cron: '40 6 * * *' # 12:10 PM IST daily
@@ -36,7 +37,7 @@ jobs:
         with:
           github_token: ${{ secrets.NUGET_PACKAGE_TOKEN }}
           jira_email: ${{ secrets.JIRA_USERS_EMAIL }}
-          jira_api_token: ${{ secrets.JIRA_APIS_TOKEN }}
+          jira_api_token: ${{ secrets.JIRA_APIS_TOKENS }}
           jira_project: KAN
           jira_component: "Vulnerability"
 
