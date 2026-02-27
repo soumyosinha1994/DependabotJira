@@ -6,6 +6,7 @@ on:
   # pull_request:
   #   branches: [main]
   #   types: [opened, reopened, synchronize, ready_for_review, labeled]
+
 # on:
 #   schedule:
 #     - cron: '40 6 * * *' # 12:10 PM IST daily
